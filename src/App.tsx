@@ -41,12 +41,12 @@ function App() {
     return (
       <main className="container">
         <div className="results">
-          <h1>Quiz complete!</h1>
+          <h1>Ура! Вы прошли испытание!</h1>
           <p className="score">
-            You got {score} / {questions.length}
+            Ваш результат {score} / {questions.length}
           </p>
           <button type="button" className="check-button" onClick={handleRestart}>
-            Play again
+            Повторим?
           </button>
         </div>
       </main>
