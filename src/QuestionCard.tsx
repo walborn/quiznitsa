@@ -8,13 +8,16 @@ interface QuestionCardProps {
 }
 
 /**
- * Renders a single question: image, prompt, selectable options, and the
- * "Check" button. Owns selection state for this question only; on check it
- * locks the options, shows ✅/❌ markers, and reports correctness upward.
+ * One question in two phases:
+ *  1. The intro video plays full-window; when it ends (or is skipped) we
+ *     advance to phase 2.
+ *  2. The prompt + selectable options + "Check" button. After checking, the
+ *     options lock, ✓/✕ markers show, and an optional answer video plays.
  */
 export function QuestionCard({ question, onAnswered }: QuestionCardProps) {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [checked, setChecked] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
 
   function toggle(index: number) {
     if (checked) return;
@@ -34,6 +37,30 @@ export function QuestionCard({ question, onAnswered }: QuestionCardProps) {
     onAnswered(correct);
   }
 
+  // Phase 1: fullscreen intro video.
+  if (!introDone) {
+    return (
+      <div className="video-overlay">
+        <video
+          className="overlay-video"
+          src={import.meta.env.BASE_URL + question.video}
+          autoPlay
+          playsInline
+          controls
+          onEnded={() => setIntroDone(true)}
+        />
+        <button
+          type="button"
+          className="skip-button"
+          onClick={() => setIntroDone(true)}
+        >
+          Skip ▸
+        </button>
+      </div>
+    );
+  }
+
+  // Phase 2: the question.
   const showAnswerVideo = Boolean(checked && question.answerVideo);
   const videoSrc = showAnswerVideo
     ? question.answerVideo
@@ -83,19 +110,6 @@ export function QuestionCard({ question, onAnswered }: QuestionCardProps) {
           );
         })}
       </ul>
-
-      {/* {checked && question.answerVideo && (
-        <div className="answer">
-          <p className="answer-label">Ответ</p>
-          <video
-            className="question-video"
-            src={import.meta.env.BASE_URL + question.answerVideo}
-            autoPlay
-            playsInline
-            controls
-          />
-        </div>
-      )} */}
 
       {!checked && (
         <button
