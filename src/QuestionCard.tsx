@@ -34,9 +34,22 @@ export function QuestionCard({ question, onAnswered }: QuestionCardProps) {
     onAnswered(correct);
   }
 
+  const showAnswerVideo = Boolean(checked && question.answerVideo);
+  const videoSrc = showAnswerVideo
+    ? question.answerVideo
+    : question.video;
+
   return (
     <div className="card">
-      <img className="question-image" src={question.image} alt="" />
+      <video
+        className="question-video"
+        src={import.meta.env.BASE_URL + videoSrc}
+        autoPlay={showAnswerVideo}
+        muted={showAnswerVideo && question.muteAnswerVideo}
+        loop
+        playsInline
+        controls
+      />
       <h2 className="prompt">{question.prompt}</h2>
 
       <ul className="options">
@@ -70,6 +83,19 @@ export function QuestionCard({ question, onAnswered }: QuestionCardProps) {
           );
         })}
       </ul>
+
+      {/* {checked && question.answerVideo && (
+        <div className="answer">
+          <p className="answer-label">Ответ</p>
+          <video
+            className="question-video"
+            src={import.meta.env.BASE_URL + question.answerVideo}
+            autoPlay
+            playsInline
+            controls
+          />
+        </div>
+      )} */}
 
       {!checked && (
         <button

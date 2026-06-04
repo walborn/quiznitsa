@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Original video masters — transcoded to .mp4 for the web build
+/video-src/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

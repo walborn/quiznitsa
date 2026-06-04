@@ -3,10 +3,17 @@ import react from "@vitejs/plugin-react";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
+// @ts-expect-error process is a nodejs global
+const isGithubPages = process.env.GITHUB_PAGES;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
   plugins: [react()],
+
+  // GitHub Pages serves project sites from /<repo>/. The deploy workflow sets
+  // GITHUB_PAGES so this prefix only applies to the Pages build — Tauri builds
+  // and local dev keep the root base.
+  base: isGithubPages ? "/quiznitsa/" : "/",
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
